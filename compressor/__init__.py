@@ -132,7 +132,6 @@ class Compressor(object):
         if getattr(self, '_output', ''):
             return self._output
         output = self.concat()
-        filter_method = getattr(self, 'filter_method', None)
         if self.filters:
             output = self.filter(output, 'output')
         self._output = output
@@ -217,9 +216,7 @@ class CssCompressor(Compressor):
         right?
         """
         compiler = settings.COMPILER_FORMATS[ext]
-        try:
-            bin = compiler['binary_path']
-        except:
+        if 'binary_path' not in compiler:
             raise Exception("Path to CSS compiler must be included in COMPILER_FORMATS")
         
         tmp_file = NamedTemporaryFile(mode='w',suffix=ext)

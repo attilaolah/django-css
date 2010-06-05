@@ -1,7 +1,7 @@
 import os
 import re
 import posixpath
-from compressor.filters import FilterBase, FilterError
+from compressor.filters import FilterBase
 from compressor.conf import settings
 
 class CssAbsoluteFilter(FilterBase):
