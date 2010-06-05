@@ -15,12 +15,6 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.utils.encoding import smart_str
 
-try:
-    from django.contrib.sites.models import Site
-    DOMAIN = Site.objects.get_current().domain
-except:
-    DOMAIN = ''
-
 from compressor.conf import settings
 from compressor import filters
 
@@ -60,6 +54,11 @@ class Compressor(object):
         self.split_content = []
         self.soup = BeautifulSoup(self.content)
         self.xhtml = xhtml
+        try:  # Keep this here to avoid crashing FCGI
+          from django.contrib.sites.models import Site
+          self.domain = Site.objects.get_current().domain
+        except:
+          self.domain = ''
 
     def content_hash(self):
         """docstring for content_hash"""
@@ -89,7 +88,7 @@ class Compressor(object):
         cachekey for this block of css or js.
         """
         cachestr = "".join((str(c) for c in self.cachebits))
-        return "%s.django_compressor.%s.%s" % (DOMAIN, get_hexdigest(cachestr)[:12], settings.COMPRESS)
+        return "%s.django_compressor.%s.%s" % (self.domain, get_hexdigest(cachestr)[:12], settings.COMPRESS)
 
     @property
     def hunks(self):
