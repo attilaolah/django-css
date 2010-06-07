@@ -1,6 +1,6 @@
 import os
-import platform
 import re
+import sys
 import subprocess
 from BeautifulSoup import BeautifulSoup
 from tempfile import NamedTemporaryFile
@@ -195,7 +195,7 @@ class CssCompressor(Compressor):
             bin = compiler['binary_path']
         except:
             raise Exception("Path to CSS compiler must be included in COMPILER_FORMATS")
-        if platform.uname()[0] == 'Windows' and filename[1] == ':':
+        if sys.platform.startswith('win') and filename[1] == ':':
             if compiler['binary_path'].endswith('sass'):
                 filename = filename[2:]  # trim the drive letter
         arguments = compiler.get('arguments','').replace("*",filename)
